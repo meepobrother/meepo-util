@@ -1,7 +1,7 @@
 {
   "name": "meepo-util",
-  "version": "0.0.0",
-  "description": "",
+  "version": "1.0.0",
+  "description": "util for meepo",
   "keywords": [],
   "main": "dist/meepo-util.umd.js",
   "module": "dist/meepo-util.es5.js",
