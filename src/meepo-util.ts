@@ -1,65 +1,29 @@
-const _: any = require('underscore');
-
-export function clamp(min: number, n: number, max: number) {
-  return Math.max(min, Math.min(n, max));
-}
-
-export function deepCopy(obj: any) {
-  return JSON.parse(JSON.stringify(obj));
-}
-
-export function deepEqual(a: any, b: any) {
-  if (a === b) {
-    return true;
+export function getClientHeightByDom(dom: any) {
+  let height = dom.clientHeight;
+  if (dom === document.body && document.compatMode === 'CSS1Compat') {
+    height = document.documentElement.clientHeight;
   }
-  return JSON.stringify(a) === JSON.stringify(b);
+  return height;
 }
-
-export function isDefined(val: any): boolean { return typeof val !== 'undefined'; }
 /**
- * 不为undefined 并且 不为null
- * @param val 
+ * 设置一个Util对象下的命名空间
+ * @param {Object} parent 需要绑定到哪一个对象上
+ * @param {String} namespace 需要绑定的命名空间名
+ * @param {Object} target 需要绑定的目标对象
+ * @return {Object} 返回最终的对象
  */
-export function isPresent(val: any): val is any { return val !== undefined && val !== null; }
-/**
- * 是undefined或者是null
- * @param val 
- */
-export function isBlank(val: any): val is null { return val === undefined || val === null; }
-
-export function isPrimitive(val: any) {
-  return _.isString(val) || _.isBoolean(val) || (_.isNumber(val) && !isNaN(val));
-}
-
-export function isTrueProperty(val: any): boolean {
-  if (typeof val === 'string') {
-    val = val.toLowerCase().trim();
-    return (val === 'true' || val === 'on' || val === '');
+export function namespace(parent: any, namespaceStr: string, target: any) {
+  if (!namespaceStr) {
+    return parent;
   }
-  return !!val;
-}
-
-export function isCheckedProperty(a: any, b: any): boolean {
-  if (a === undefined || a === null || a === '') {
-    return (b === undefined || b === null || b === '');
-  } else if (a === true || a === 'true') {
-    return (b === true || b === 'true');
-  } else if (a === false || a === 'false') {
-    return (b === false || b === 'false');
-  } else if (a === 0 || a === '0') {
-    return (b === 0 || b === '0');
+  const namespaceArr = namespaceStr.split('.');
+  const len = namespaceArr.length;
+  let res = parent;
+  for (let i = 0; i < len - 1; i += 1) {
+    const tmp = namespaceArr[i];
+    res[tmp] = res[tmp] || {};
+    res = res[tmp];
   }
-  return (a === b);
-}
-
-export function reorderArray(array: any[], indexes: { from: number, to: number }): any[] {
-  const element = array[indexes.from];
-  array.splice(indexes.from, 1);
-  array.splice(indexes.to, 0, element);
-  return array;
-}
-
-export function removeArrayItem(array: any[], item: any) {
-  const index = array.indexOf(item);
-  return !!~index && !!array.splice(index, 1);
+  res[namespaceArr[len - 1]] = target;
+  return target;
 }
